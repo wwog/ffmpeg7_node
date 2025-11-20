@@ -1,0 +1,1 @@
+Place an input.mp4 file in the current directory and create a new output folder. Running the script will attempt to use "example"
