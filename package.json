@@ -1,0 +1,54 @@
+{
+  "name": "ffmpeg7",
+  "version": "0.0.2",
+  "description": "FFmpeg 7.1.2 for Node.js",
+  "homepage": "https://github.com/wwog/ffmpeg7_node",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "install": "node scripts/prepareArchive.js && node-gyp rebuild && node scripts/copyNative.js",
+    "build": "node-gyp rebuild && node scripts/copyNative.js",
+    "build:addon": "node-gyp rebuild",
+    "build:ts": "rolldown -c && tsc --emitDeclarationOnly",
+    "prepareArchive": "node scripts/prepareArchive.js",
+    "decompress": "node scripts/decompress.js",
+    "compress": "node scripts/compress.js",
+    "example1": "node example/log-listener-demo.js",
+    "example2": "node example/360p-transcode-demo.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "binding.gyp",
+    "addon_src",
+    "scripts"
+  ],
+  "gypfile": true,
+  "keywords": [
+    "ffmpeg",
+    "node-addon",
+    "ffmpeg-node",
+    "media",
+    "video",
+    "audio",
+    "transcode",
+    "conversion",
+    "processing",
+    "encoding",
+    "decoding",
+    "streaming",
+    "ffmpeg-node"
+  ],
+  "author": "wwog",
+  "license": "ISC",
+  "packageManager": "pnpm@10.18.3",
+  "dependencies": {
+    "node-addon-api": "latest",
+    "rolldown": "1.0.0-beta.51"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "node-gyp": "latest",
+    "typescript": "^5.9.3"
+  }
+}

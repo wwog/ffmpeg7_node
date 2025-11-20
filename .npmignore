@@ -1,0 +1,29 @@
+# 开发相关
+.git
+.gitignore
+.DS_Store
+*.log
+
+# 构建产物（本地）
+build/
+
+# 排除未压缩的大文件夹（使用压缩文件）
+ffmpeg/
+prebuild/
+
+# 仅包含压缩文件
+!ffmpeg.tar.gz
+!prebuild.tar.gz
+
+# Node 相关
+node_modules/
+pnpm-lock.yaml
+
+# TypeScript 配置
+tsconfig.json
+rolldown.config.ts
+
+# 开发工具配置
+.vscode/
+.idea/
+dist/ffmpeg_node.node

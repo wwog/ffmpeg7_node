@@ -1,0 +1,13 @@
+build/
+dist/
+node_modules/
+example/output/
+example/input.mp4
+.DS_Store
+*.log
+ffmpeg
+prebuild
+
+
+*.tar.gz
+test-image.jpg
