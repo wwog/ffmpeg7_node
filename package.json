@@ -9,6 +9,7 @@
     "install": "node scripts/prepareArchive.js && node-gyp rebuild && node scripts/copyNative.js",
     "build": "node-gyp rebuild && node scripts/copyNative.js",
     "build:addon": "node-gyp rebuild",
+    "build:node20": "node-gyp rebuild --target=20.18.3 && node scripts/copyNative.js",
     "build:ts": "rolldown -c && tsc --emitDeclarationOnly",
     "prepareArchive": "node scripts/prepareArchive.js",
     "decompress": "node scripts/decompress.js",
