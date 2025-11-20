@@ -12,9 +12,5 @@ export * from './types';
 // ============================================================================
 // default export (includes all APIs)
 // ============================================================================
-import * as HighLevel from './high-level';
-import * as MidLevel from './mid-level';
-
-
-export const run = HighLevel.run;
-export { HighLevel, MidLevel };
+export * from './high-level';
+export * as MidLevel from './mid-level';

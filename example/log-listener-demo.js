@@ -1,6 +1,6 @@
 
 
-const ffmpeg = require('../dist/index.js');
+const { addLogListener, clearLogListener, LogLevel, run } = require('../dist/index.js');
 const path = require('path');
 
 
@@ -8,11 +8,11 @@ let totalDuration = 0;
 let lastProgressLine = '';
 let logBuffer = ''; // 用于累积日志片段
 function addlog() {
-    ffmpeg.HighLevel.addLogListener((level, message) => {
+    addLogListener((level, message) => {
         const cleanMessage = message.trim();
 
         // 忽略 VERBOSE 和 DEBUG 日志
-        if (level > ffmpeg.LogLevel.INFO) {
+        if (level > LogLevel.INFO) {
             return;
         }
 
@@ -72,13 +72,13 @@ function addlog() {
         }
 
         // 显示错误和警告
-        if (level <= ffmpeg.LogLevel.WARNING && cleanMessage.length > 1) {
+        if (level <= LogLevel.WARNING && cleanMessage.length > 1) {
             if (lastProgressLine) {
                 console.log(''); // 换行
             }
             console.log(`\x1b[33m⚠ 警告: ${cleanMessage}\x1b[0m`);
         }
-        if (level <= ffmpeg.LogLevel.ERROR && cleanMessage.length > 1) {
+        if (level <= LogLevel.ERROR && cleanMessage.length > 1) {
             if (lastProgressLine) {
                 console.log(''); // 换行
             }
@@ -108,7 +108,7 @@ console.log('\n开始转换...\n');
 try {
     addlog()
     let startTime = Date.now();
-    const result = ffmpeg.run([
+    const result = run([
         '-i', inputFile,
         '-vcodec', 'libx264',
         '-preset', 'medium',      // 平衡速度和压缩率
@@ -131,7 +131,7 @@ try {
     console.log('\n\x1b[32m✓ 转换完成！\x1b[0m');
 
     // 清除日志监听器
-    ffmpeg.HighLevel.clearLogListener();
+    clearLogListener();
     // addlog()
     // let startTime1 = Date.now();
     // ffmpeg.run([
@@ -162,7 +162,7 @@ try {
     console.error('\n\x1b[31m✗ 转换失败:', error.message, '\x1b[0m');
 
     // 确保清除日志监听器
-    ffmpeg.clearLogListener();
+    clearLogListener();
 
     process.exit(1);
 }

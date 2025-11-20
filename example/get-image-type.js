@@ -8,8 +8,7 @@
  */
 
 const path = require('path');
-const { run, HighLevel } = require('../dist/index.js');
-const { addLogListener, clearLogListener } = HighLevel;
+const { run, addLogListener, clearLogListener } = require('../dist/index.js');
 
 /**
  * 使用 run 方法获取图片元数据
@@ -80,12 +79,12 @@ function getActualImageFormat(codec, container) {
     'svg': 'SVG',
     'raw': 'RAW',
   };
-  
+
   // 特殊处理：如果是 tiff 且容器显示可能是 DNG
   if (codec === 'tiff' && container && container.includes('tiff')) {
     return 'TIFF (可能是 DNG)';
   }
-  
+
   return formatMap[codec.toLowerCase()] || codec.toUpperCase();
 }
 
@@ -101,7 +100,7 @@ function parseImageInfo(logs, imagePath) {
   const path = require('path');
   const fileExt = path.extname(imagePath).toLowerCase();
   const fileName = path.basename(imagePath);
-  
+
   console.log(`📁 文件名: ${fileName}`);
 
   // 将所有日志合并为一个字符串便于搜索
@@ -122,19 +121,19 @@ function parseImageInfo(logs, imagePath) {
     const pixelFormat = streamMatch[2];
     const width = streamMatch[3];
     const height = streamMatch[4];
-    
+
     // 根据编码格式判断真实格式
     const actualFormat = getActualImageFormat(codec, containerFormat);
-    
+
     console.log(`🔍 真实格式: ${actualFormat}`);
     console.log(`📝 文件扩展名: ${fileExt || '(无扩展名)'}`);
-    
+
     // 如果扩展名和实际格式不匹配，给出警告
     const extUpper = fileExt.replace('.', '').toUpperCase();
     if (fileExt && !actualFormat.toUpperCase().includes(extUpper)) {
       console.log(`⚠️  警告: 文件扩展名 ${fileExt} 与实际格式 ${actualFormat} 不匹配！`);
     }
-    
+
     console.log(`📦 容器格式: ${containerFormat}`);
     console.log(`🎨 编码格式: ${codec}`);
     console.log(`📐 图片尺寸: ${width}x${height} 像素`);
@@ -186,7 +185,7 @@ function parseImageInfo(logs, imagePath) {
  */
 function getDetailedImageInfo(imagePath) {
   console.log('\n=== 获取详细的图片信息（ffprobe 风格）===\n');
-  
+
   let capturedLogs = [];
 
   addLogListener((level, message) => {
