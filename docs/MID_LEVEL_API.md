@@ -150,6 +150,8 @@ streams.forEach(stream => {
   if (stream.type === 'video') {
     console.log(`  Resolution: ${stream.width}x${stream.height}`);
     console.log(`  FPS: ${stream.fps}`);
+    console.log(`  avg_frame_rate: ${stream.avg_frame_rate}`);
+    console.log(`  r_frame_rate: ${stream.r_frame_rate}`);
   }
 });
 ```
@@ -162,6 +164,11 @@ streams.forEach(stream => {
 
 **StreamInfo Interface:**
 ```typescript
+interface Rational {
+  num: number;
+  den: number;
+}
+
 interface StreamInfo {
   index: number;
   type: 'video' | 'audio' | 'subtitle' | 'data' | 'unknown';
@@ -169,6 +176,10 @@ interface StreamInfo {
   width?: number;        // Video only
   height?: number;       // Video only
   fps?: number;          // Video only
+  avgFrameRate?: Rational;
+  avg_frame_rate?: string;
+  rFrameRate?: Rational;
+  r_frame_rate?: string;
   pixelFormat?: string;  // Video only
   sampleRate?: number;   // Audio only
   channels?: number;     // Audio only

@@ -85,6 +85,8 @@ export function createOutput(filePath: string, format?: string): number {
  *   if (stream.type === 'video') {
  *     console.log(`  Resolution: ${stream.width}x${stream.height}`);
  *     console.log(`  FPS: ${stream.fps}`);
+ *     console.log(`  avg_frame_rate: ${stream.avg_frame_rate}`);
+ *     console.log(`  r_frame_rate: ${stream.r_frame_rate}`);
  *   }
  * });
  * 

@@ -34,6 +34,13 @@ export interface VideoFormatInfo {
 /**
  * Stream information interface (中层 API)
  */
+export interface Rational {
+  /** numerator */
+  num: number;
+  /** denominator */
+  den: number;
+}
+
 export interface StreamInfo {
   /** Stream index */
   index: number;
@@ -47,6 +54,14 @@ export interface StreamInfo {
   height?: number;
   /** Frames per second (video streams only) */
   fps?: number;
+  /** Average frame rate in rational form (video streams only) */
+  avgFrameRate?: Rational;
+  /** Average frame rate string, e.g. "60000/1001" */
+  avg_frame_rate?: string;
+  /** Real base frame rate in rational form */
+  rFrameRate?: Rational;
+  /** Real base frame rate string, e.g. "60000/1001" */
+  r_frame_rate?: string;
   /** Sample rate (audio streams only) */
   sampleRate?: number;
   /** Number of channels (audio streams only) */

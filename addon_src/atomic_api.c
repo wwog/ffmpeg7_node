@@ -310,10 +310,46 @@ napi_value atomic_get_input_streams(napi_env env, napi_callback_info info) {
             napi_set_named_property(env, stream_obj, "height", height_val);
             
             // Frame rate
-            if (stream->avg_frame_rate.den > 0) {
+            if (stream->avg_frame_rate.den > 0 && stream->avg_frame_rate.num > 0) {
                 double fps = av_q2d(stream->avg_frame_rate);
                 napi_create_double(env, fps, &fps_val);
                 napi_set_named_property(env, stream_obj, "fps", fps_val);
+                
+                // avg_frame_rate (ffprobe style string)
+                char rate_str[64];
+                snprintf(rate_str, sizeof(rate_str), "%d/%d",
+                         stream->avg_frame_rate.num, stream->avg_frame_rate.den);
+                napi_value avg_rate_str;
+                napi_create_string_utf8(env, rate_str, NAPI_AUTO_LENGTH, &avg_rate_str);
+                napi_set_named_property(env, stream_obj, "avg_frame_rate", avg_rate_str);
+                
+                // avgFrameRate as rational object
+                napi_value avg_rate_obj;
+                napi_create_object(env, &avg_rate_obj);
+                napi_value avg_num_val, avg_den_val;
+                napi_create_int32(env, stream->avg_frame_rate.num, &avg_num_val);
+                napi_create_int32(env, stream->avg_frame_rate.den, &avg_den_val);
+                napi_set_named_property(env, avg_rate_obj, "num", avg_num_val);
+                napi_set_named_property(env, avg_rate_obj, "den", avg_den_val);
+                napi_set_named_property(env, stream_obj, "avgFrameRate", avg_rate_obj);
+            }
+
+            if (stream->r_frame_rate.den > 0 && stream->r_frame_rate.num > 0) {
+                char rate_str[64];
+                snprintf(rate_str, sizeof(rate_str), "%d/%d",
+                         stream->r_frame_rate.num, stream->r_frame_rate.den);
+                napi_value r_rate_str;
+                napi_create_string_utf8(env, rate_str, NAPI_AUTO_LENGTH, &r_rate_str);
+                napi_set_named_property(env, stream_obj, "r_frame_rate", r_rate_str);
+
+                napi_value r_rate_obj;
+                napi_create_object(env, &r_rate_obj);
+                napi_value r_num_val, r_den_val;
+                napi_create_int32(env, stream->r_frame_rate.num, &r_num_val);
+                napi_create_int32(env, stream->r_frame_rate.den, &r_den_val);
+                napi_set_named_property(env, r_rate_obj, "num", r_num_val);
+                napi_set_named_property(env, r_rate_obj, "den", r_den_val);
+                napi_set_named_property(env, stream_obj, "rFrameRate", r_rate_obj);
             }
         }
         
