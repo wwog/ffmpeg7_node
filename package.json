@@ -1,6 +1,6 @@
 {
   "name": "ffmpeg7",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "FFmpeg 7.1.2 for Node.js",
   "homepage": "https://github.com/wwog/ffmpeg7_node",
   "main": "dist/index.js",
