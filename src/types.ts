@@ -4,6 +4,26 @@
  */
 
 /**
+ * Detailed audio stream information
+ */
+export interface AudioFormatInfo {
+  /** Audio codec name (e.g., "aac") */
+  codec?: string;
+  /** Audio bitrate in bits per second */
+  bitrate?: number;
+  /** Audio sample rate in Hz */
+  sampleRate?: number;
+  /** Number of audio channels */
+  channels?: number;
+  /** Channel layout description (e.g., "stereo") */
+  channelLayout?: string;
+  /** Sample format (e.g., "fltp") */
+  sampleFormat?: string;
+  /** Bits per sample */
+  bitsPerSample?: number;
+}
+
+/**
  * Video format information interface
  */
 export interface VideoFormatInfo {
@@ -23,12 +43,24 @@ export interface VideoFormatInfo {
   height?: number;
   /** Frames per second */
   fps?: number;
-  /** Audio sample rate in Hz */
+  /** Audio sample rate in Hz (legacy shortcut) */
   sampleRate?: number;
-  /** Number of audio channels */
+  /** Number of audio channels (legacy shortcut) */
   channels?: number;
+  /** Whether the media file includes at least one audio stream */
+  hasAudio?: boolean;
+  /** Audio bitrate in bits per second */
+  audioBitrate?: number;
+  /** Audio channel layout description */
+  audioChannelLayout?: string;
+  /** Audio sample format name */
+  audioSampleFormat?: string;
+  /** Audio bits per sample */
+  audioBitsPerSample?: number;
   /** Metadata dictionary */
   metadata?: Record<string, string>;
+  /** Detailed audio information when an audio stream exists */
+  audio?: AudioFormatInfo;
 }
 
 /**

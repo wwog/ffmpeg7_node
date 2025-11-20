@@ -83,7 +83,7 @@ ffmpeg.run(['-i', 'input.mp4', '-c:v', 'libx264', 'output.mp4']);
 **主要函数：**
 - `run(args)` - 使用 CLI 参数执行 FFmpeg
 - `getVideoDuration(filePath)` - 获取视频时长
-- `getVideoFormatInfo(filePath)` - 获取详细格式信息
+- `getVideoFormatInfo(filePath)` - 获取详细格式信息（若存在音频流会返回 `info.audio` 详情）
 - `addLogListener(callback)` - 监听 FFmpeg 日志
 
 ### 📗 中级 API（细粒度控制）

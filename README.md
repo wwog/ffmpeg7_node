@@ -83,7 +83,7 @@ ffmpeg.run(['-i', 'input.mp4', '-c:v', 'libx264', 'output.mp4']);
 **Key Functions:**
 - `run(args)` - Execute FFmpeg with CLI arguments
 - `getVideoDuration(filePath)` - Get video duration
-- `getVideoFormatInfo(filePath)` - Get detailed format information
+- `getVideoFormatInfo(filePath)` - Get detailed format information (includes audio details when present via `info.audio`)
 - `addLogListener(callback)` - Listen to FFmpeg logs
 
 ### 📗 Mid-Level API (Fine-Grained Control)

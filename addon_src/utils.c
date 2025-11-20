@@ -9,6 +9,7 @@
 #include <libavutil/dict.h>
 #include <libavutil/rational.h>
 #include <libavutil/channel_layout.h>
+#include <libavutil/samplefmt.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -236,11 +237,33 @@ napi_value get_video_format_info(napi_env env, napi_callback_info info)
     // Set audio codec
     if (audio_stream_idx >= 0) {
         audio_codecpar = fmt_ctx->streams[audio_stream_idx]->codecpar;
+        napi_value audio_obj = NULL;
+        bool audio_obj_initialized = false;
+        
+        status = napi_create_object(env, &audio_obj);
+        if (status == napi_ok) {
+            audio_obj_initialized = true;
+        }
+        
         const AVCodec *codec = avcodec_find_decoder(audio_codecpar->codec_id);
         if (codec && codec->name) {
             status = napi_create_string_utf8(env, codec->name, NAPI_AUTO_LENGTH, &audio_codec);
             if (status == napi_ok) {
                 napi_set_named_property(env, result, "audioCodec", audio_codec);
+                if (audio_obj_initialized) {
+                    napi_set_named_property(env, audio_obj, "codec", audio_codec);
+                }
+            }
+        }
+        
+        if (audio_codecpar->bit_rate > 0) {
+            napi_value audio_bitrate;
+            status = napi_create_int64(env, audio_codecpar->bit_rate, &audio_bitrate);
+            if (status == napi_ok) {
+                napi_set_named_property(env, result, "audioBitrate", audio_bitrate);
+                if (audio_obj_initialized) {
+                    napi_set_named_property(env, audio_obj, "bitrate", audio_bitrate);
+                }
             }
         }
         
@@ -250,6 +273,9 @@ napi_value get_video_format_info(napi_env env, napi_callback_info info)
             status = napi_create_int32(env, audio_codecpar->sample_rate, &sample_rate);
             if (status == napi_ok) {
                 napi_set_named_property(env, result, "sampleRate", sample_rate);
+                if (audio_obj_initialized) {
+                    napi_set_named_property(env, audio_obj, "sampleRate", sample_rate);
+                }
             }
         }
         
@@ -272,8 +298,83 @@ napi_value get_video_format_info(napi_env env, napi_callback_info info)
                 status = napi_create_int32(env, nb_channels, &channels);
                 if (status == napi_ok) {
                     napi_set_named_property(env, result, "channels", channels);
+                    if (audio_obj_initialized) {
+                        napi_set_named_property(env, audio_obj, "channels", channels);
+                    }
                 }
             }
+            
+            char channel_layout_desc[256];
+            bool has_channel_layout = false;
+            if (audio_codecpar->ch_layout.nb_channels > 0) {
+                if (av_channel_layout_describe(&audio_codecpar->ch_layout, channel_layout_desc, sizeof(channel_layout_desc)) >= 0) {
+                    has_channel_layout = true;
+                }
+            }
+#if LIBAVCODEC_VERSION_MAJOR < 59
+            if (!has_channel_layout && audio_codecpar->channel_layout != 0) {
+                av_get_channel_layout_string(
+                    channel_layout_desc,
+                    (int)sizeof(channel_layout_desc),
+                    nb_channels > 0 ? nb_channels : audio_codecpar->channels,
+                    audio_codecpar->channel_layout
+                );
+                has_channel_layout = true;
+            }
+#endif
+            
+            if (has_channel_layout) {
+                napi_value channel_layout_val;
+                status = napi_create_string_utf8(env, channel_layout_desc, NAPI_AUTO_LENGTH, &channel_layout_val);
+                if (status == napi_ok) {
+                    napi_set_named_property(env, result, "audioChannelLayout", channel_layout_val);
+                    if (audio_obj_initialized) {
+                        napi_set_named_property(env, audio_obj, "channelLayout", channel_layout_val);
+                    }
+                }
+            }
+        }
+        
+        if (audio_codecpar->format != AV_SAMPLE_FMT_NONE) {
+            const char *sample_fmt_name = av_get_sample_fmt_name((enum AVSampleFormat)audio_codecpar->format);
+            if (sample_fmt_name) {
+                napi_value sample_fmt_val;
+                status = napi_create_string_utf8(env, sample_fmt_name, NAPI_AUTO_LENGTH, &sample_fmt_val);
+                if (status == napi_ok) {
+                    napi_set_named_property(env, result, "audioSampleFormat", sample_fmt_val);
+                    if (audio_obj_initialized) {
+                        napi_set_named_property(env, audio_obj, "sampleFormat", sample_fmt_val);
+                    }
+                }
+            }
+        }
+        
+        int bits_per_sample = 0;
+        if (audio_codecpar->bits_per_raw_sample > 0) {
+            bits_per_sample = audio_codecpar->bits_per_raw_sample;
+        } else if (audio_codecpar->bits_per_coded_sample > 0) {
+            bits_per_sample = audio_codecpar->bits_per_coded_sample;
+        }
+        
+        if (bits_per_sample > 0) {
+            napi_value bits_per_sample_val;
+            status = napi_create_int32(env, bits_per_sample, &bits_per_sample_val);
+            if (status == napi_ok) {
+                napi_set_named_property(env, result, "audioBitsPerSample", bits_per_sample_val);
+                if (audio_obj_initialized) {
+                    napi_set_named_property(env, audio_obj, "bitsPerSample", bits_per_sample_val);
+                }
+            }
+        }
+        
+        napi_value has_audio_val;
+        status = napi_get_boolean(env, true, &has_audio_val);
+        if (status == napi_ok) {
+            napi_set_named_property(env, result, "hasAudio", has_audio_val);
+        }
+        
+        if (audio_obj_initialized) {
+            napi_set_named_property(env, result, "audio", audio_obj);
         }
     }
     
