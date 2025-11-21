@@ -70,7 +70,8 @@
                 "user32.lib",
                 "gdi32.lib",
                 "winmm.lib",
-                "psapi.lib"
+                "psapi.lib",
+                "zlib.lib"
               ]
             }
           },
@@ -96,7 +97,8 @@
             "-lavdevice",
             "-lx264",
             "-lx265",
-            "-lvpx"
+            "-lvpx",
+            "-lz"
           ],
           "cflags": [
             "-std=c11",
